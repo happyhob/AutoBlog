@@ -70,4 +70,5 @@ http://localhost:8000 에서 프론트엔드 실행
 ## 📌 참고
 FastAPI 공식 문서: https://fastapi.tiangolo.com/
 
-HTML/CSS/JS 기본 참고 문서: MDN Web Docs
+HTML/CSS/JS 기본 참고 문서: [MDN Web Docs
+](https://developer.mozilla.org/ko/)
