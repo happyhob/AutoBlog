@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 포스트 생성기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="input.css">/
+
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-3xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">블로그 포스트 생성기</h1>
+            <p class="text-gray-600">간단한 입력으로 전문적인 블로그 포스트를 생성해보세요</p>
+        </header>
+
+        <!-- Main Form -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Form Header -->
+            <div class="gradient-bg px-6 py-4">
+                <h2 class="text-xl font-semibold text-white">새 포스트 작성</h2>
+            </div>
+
+            <!-- Form Body -->
+            <div class="p-6">
+                <!-- 제목 입력 창 -->
+                <div class="relative mb-8">
+                    <input type="text" id="postTitle" class="input-field w-full px-4 py-3 border-b-2 border-gray-300 focus:border-blue-500 outline-none text-lg" placeholder=" ">
+                    <label for="postTitle" class="floating-label absolute left-4 top-3 text-gray-500 pointer-events-none">제목을 입력하세요</label>
+                </div>
+
+                <!-- 블로그 내용 입력 창 -->
+                <div class="mb-8">
+                    <label for="postContent" class="block text-gray-700 font-medium mb-2">내용 요약</label>
+                    <textarea id="postContent" class="textarea-autoresize w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="포스트에 포함할 주요 내용을 간단히 입력해주세요..."></textarea>
+                    <p class="text-sm text-gray-500 mt-1">최대 500자까지 입력 가능합니다</p>
+                </div>
+
+                <!-- 블로그 카테고르 선택 창 -->
+                <div class="mb-10">
+                    <label for="blogStyle" class="block text-gray-700 font-medium mb-2">블로그 스타일 선택</label>
+                    <div class="relative">
+                        <select id="blogStyle" class="appearance-none w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 bg-white cursor-pointer">
+                            <option value="" disabled selected>스타일을 선택해주세요</option>
+                            <option value="tech">기술 블로그</option>
+                            <option value="daily">일상 블로그</option>
+                            <option value="summary">요약형 포스트</option>
+                            <option value="retrospective">회고록</option>
+                            <option value="tutorial">튜토리얼/가이드</option>
+                            <option value="opinion">의견/칼럼</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포스트 생성 버튼 -->
+                <div class="text-center">
+                    <button id="generateBtn" class="generate-btn gradient-bg text-white font-bold py-4 px-8 rounded-full text-lg inline-flex items-center">
+                        <i class="fas fa-magic mr-2"></i> 포스트 생성하기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 미리보기 창 (hidden by default) -->
+        <div id="previewSection" class="bg-white rounded-xl shadow-lg overflow-hidden mt-8 hidden">
+            <div class="gradient-bg px-6 py-4">
+                <h2 class="text-xl font-semibold text-white">생성된 포스트 미리보기</h2>
+            </div>
+            <div class="p-6">
+                <div id="postPreview" class="prose max-w-none">
+                    <!-- Generated content will appear here -->
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">수정하기</button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-resize textarea
+            const textarea = document.getElementById('postContent');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                
+                // Character counter
+                const charCount = this.value.length;
+                const counter = this.nextElementSibling;
+                counter.textContent = `${charCount}/500자`;
+                
+                if (charCount > 500) {
+                    counter.classList.add('text-red-500');
+                    counter.classList.remove('text-gray-500');
+                } else {
+                    counter.classList.add('text-gray-500');
+                    counter.classList.remove('text-red-500');
+                }
+            });
+
+            // Generate button click handler
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.addEventListener('click', function() {
+                const title = document.getElementById('postTitle').value.trim();
+                const content = document.getElementById('postContent').value.trim();
+                const style = document.getElementById('blogStyle').value;
+                
+                if (!title || !content || !style) {
+                    alert('모든 필드를 입력해주세요!');
+                    return;
+                }
+                
+                // Show loading state
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 생성 중...';
+                generateBtn.disabled = true;
+                
+                // Simulate generation delay
+                setTimeout(() => {
+                    // Generate sample content based on style
+                    let generatedContent = '';
+                    const styleName = document.getElementById('blogStyle').options[document.getElementById('blogStyle').selectedIndex].text;
+                    
+                    generatedContent += `<h1>${title}</h1>`;
+                    generatedContent += `<p class="text-gray-500 italic">스타일: ${styleName}</p>`;
+                    generatedContent += `<div class="border-l-4 border-blue-500 pl-4 my-4 italic text-gray-600">"${content}"</div>`;
+                    
+                    // Add style-specific content
+                    if (style === 'tech') {
+                        generatedContent += `
+                            <h2>기술적 배경</h2>
+                            <p>이 기술은 최근 몇 년간 빠르게 발전해왔으며, 다양한 산업 분야에서 활용되고 있습니다. 특히...</p>
+                            <h2>주요 특징</h2>
+                            <ul>
+                                <li>높은 성능과 효율성</li>
+                                <li>간편한 통합 가능성</li>
+                                <li>강력한 커뮤니티 지원</li>
+                            </ul>
+                            <h2>결론</h2>
+                            <p>앞으로도 이 기술은 지속적으로 발전할 것으로 예상되며, 개발자들은 이러한 변화에 발맞춰 나가야 할 것입니다.</p>
+                        `;
+                    } else if (style === 'daily') {
+                        generatedContent += `
+                            <h2>오늘의 일기</h2>
+                            <p>아침에 일어나니 날씨가 참 좋았습니다. 창문을 열자 상쾌한 공기가 들어오며 하루를 시작하기에 좋은 기분이 들었죠.</p>
+                            <p>점심에는 오랜만에 친구를 만나 맛있는 음식을 먹으며 즐거운 시간을 보냈습니다. 이런 소소한 행복들이 모여 삶을 풍요롭게 만드는 것 같아요.</p>
+                            <h2>오늘의 교훈</h2>
+                            <p>작은 순간들을 소중히 여기며 살아가야겠다는 생각을 했습니다. 내일도 좋은 하루가 되길 바랍니다.</p>
+                        `;
+                    } else if (style === 'summary') {
+                        generatedContent += `
+                            <h2>핵심 요약</h2>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p>1. 첫 번째 주요 포인트: ${content.split(' ').slice(0, 5).join(' ')}...</p>
+                                <p>2. 두 번째 중요한 사항: ${content.split(' ').slice(5, 10).join(' ')}...</p>
+                                <p>3. 마지막으로 기억할 점: ${content.split(' ').slice(10, 15).join(' ')}...</p>
+                            </div>
+                            <h2>추가 정보</h2>
+                            <p>더 자세한 내용은 공식 문서나 관련 자료를 참고하시기 바랍니다.</p>
+                        `;
+                    } else if (style === 'retrospective') {
+                        generatedContent += `
+                            <h2>지난 기간 회고</h2>
+                            <p>지난 몇 달간 많은 일이 있었습니다. 특히 기억에 남는 것은...</p>
+                            <h2>잘한 점</h2>
+                            <ul>
+                                <li>꾸준한 학습과 성장</li>
+                                <li>새로운 도전을 두려워하지 않음</li>
+                            </ul>
+                            <h2>개선할 점</h2>
+                            <ul>
+                                <li>시간 관리의 중요성</li>
+                                <li>건강 관리에 더 신경 쓰기</li>
+                            </ul>
+                            <h2>앞으로의 다짐</h2>
+                            <p>이번 경험을 바탕으로 더 나은 내일을 만들어가겠습니다.</p>
+                        `;
+                    }
+                    
+                    // Show preview
+                    document.getElementById('postPreview').innerHTML = generatedContent;
+                    document.getElementById('previewSection').classList.remove('hidden');
+                    
+                    // Reset button
+                    generateBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> 포스트 생성하기';
+                    generateBtn.disabled = false;
+                    
+                    // Scroll to preview
+                    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

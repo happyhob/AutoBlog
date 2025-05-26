@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 포스트 생성기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="input.css">/
+
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-3xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">블로그 포스트 생성기</h1>
+            <p class="text-gray-600">간단한 입력으로 전문적인 블로그 포스트를 생성해보세요</p>
+        </header>
+
+        <!-- Main Form -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Form Header -->
+            <div class="gradient-bg px-6 py-4">
+                <h2 class="text-xl font-semibold text-white">새 포스트 작성</h2>
+            </div>
+
+            <!-- Form Body -->
+            <div class="p-6">
+                <!-- 제목 입력 창 -->
+                <div class="relative mb-8">
+                    <input type="text" id="postTitle" class="input-field w-full px-4 py-3 border-b-2 border-gray-300 focus:border-blue-500 outline-none text-lg" placeholder=" ">
+                    <label for="postTitle" class="floating-label absolute left-4 top-3 text-gray-500 pointer-events-none">제목을 입력하세요</label>
+                </div>
+
+                <!-- 블로그 내용 입력 창 -->
+                <div class="mb-8">
+                    <label for="postContent" class="block text-gray-700 font-medium mb-2">내용 요약</label>
+                    <textarea id="postContent" class="textarea-autoresize w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="포스트에 포함할 주요 내용을 간단히 입력해주세요..."></textarea>
+                    <p class="text-sm text-gray-500 mt-1">최대 500자까지 입력 가능합니다</p>
+                </div>
+
+                <!-- 블로그 카테고르 선택 창 -->
+                <div class="mb-10">
+                    <label for="blogStyle" class="block text-gray-700 font-medium mb-2">블로그 스타일 선택</label>
+                    <div class="relative">
+                        <select id="blogStyle" class="appearance-none w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 bg-white cursor-pointer">
+                            <option value="" disabled selected>스타일을 선택해주세요</option>
+                            <option value="tech">기술 블로그</option>
+                            <option value="daily">일상 블로그</option>
+                            <option value="summary">요약형 포스트</option>
+                            <option value="retrospective">회고록</option>
+                            <option value="tutorial">튜토리얼/가이드</option>
+                            <option value="opinion">의견/칼럼</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포스트 생성 버튼 -->
+                <div class="text-center">
+                    <button id="generateBtn" class="generate-btn gradient-bg text-white font-bold py-4 px-8 rounded-full text-lg inline-flex items-center">
+                        <i class="fas fa-magic mr-2"></i> 포스트 생성하기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 미리보기 창 (hidden by default) -->
+        <div id="previewSection" class="bg-white rounded-xl shadow-lg overflow-hidden mt-8 hidden">
+            <div class="gradient-bg px-6 py-4">
+                <h2 class="text-xl font-semibold text-white">생성된 포스트 미리보기</h2>
+            </div>
+            <div class="p-6">
+                <div id="postPreview" class="prose max-w-none">
+                    <!-- Generated content will appear here -->
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">수정하기</button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="input.js"></script>
+
+</body>
+</html>
