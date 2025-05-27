@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from mcp_server import call_openai_to_generate_blog
 
 app = FastAPI()
 
@@ -26,6 +27,10 @@ async def generate_post(data: PostRequest):
     content = data.postContent
     style = data.blogStyle
 
+    response =call_openai_to_generate_blog(title,content,style)
+    print(response)
+
+    
     # 스타일에 따라 포스트 내용 구성
     style_name_map = {
         "tech": "기술 블로그",
