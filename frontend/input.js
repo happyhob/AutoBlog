@@ -44,34 +44,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // FastAPI 서버로 POST 요청
         fetch('http://localhost:8000/generate-post', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('서버 응답 오류');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // 서버로부터 받은 콘텐츠 렌더링
-            document.getElementById('postPreview').innerHTML = data.generatedContent;
-            document.getElementById('previewSection').classList.remove('hidden');
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 서버로부터 받은 콘텐츠 렌더링
+                document.getElementById('postPreview').innerHTML = marked.parse(data.result);
+                document.getElementById('previewSection').classList.remove('hidden');
 
-            // 버튼 상태 초기화
-            generateBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> 포스트 생성하기';
-            generateBtn.disabled = false;
+                // 버튼 상태 초기화
+                generateBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> 포스트 생성하기';
+                generateBtn.disabled = false;
 
-            // Scroll to preview
-            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-        })
-        .catch(error => {
-            alert('포스트 생성 중 오류 발생: ' + error.message);
-            generateBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> 포스트 생성하기';
-            generateBtn.disabled = false;
+                // Scroll to preview
+                document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                alert('포스트 생성 중 오류 발생: ' + error.message);
+                generateBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> 포스트 생성하기';
+                generateBtn.disabled = false;
         });
     });
 
